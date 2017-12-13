@@ -4,7 +4,7 @@ services:
     image: nginx:latest
     container_name: webserver
     ports: 
-      - "8090:80"
+      - "8080:80"
     volumes:
       - ./www:/www
       - ./site.conf:/etc/nginx/conf.d/site.conf
