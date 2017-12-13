@@ -9,3 +9,5 @@ This is a simple docker exmple application with two containers running php7-fpm 
 
 ## List
 `docker ps` to list the running containers
+
+Docker application is running on `http://docker:8080` 
