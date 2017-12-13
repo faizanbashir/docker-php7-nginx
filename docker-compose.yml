@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    image: nginx:latest
+    container_name: webserver
+    ports: 
+      - "8090:80"
+    volumes:
+      - ../www:/www
+      - ./site.conf:/etc/nginx/conf.d/site.conf
+    networks:
+      - code-network
+  php:
+    image: php:7-fpm
+    container_name: php
+    volumes:
+      - ../www:/www
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - code-network
+networks:
+  code-network:
+    driver: bridge
