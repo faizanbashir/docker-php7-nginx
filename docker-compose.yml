@@ -6,7 +6,7 @@ services:
     ports: 
       - "8090:80"
     volumes:
-      - ../www:/www
+      - ./www:/www
       - ./site.conf:/etc/nginx/conf.d/site.conf
     networks:
       - code-network
@@ -14,7 +14,7 @@ services:
     image: php:7-fpm
     container_name: php
     volumes:
-      - ../www:/www
+      - ./www:/www
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
       - code-network
