@@ -6,15 +6,39 @@ services:
     ports: 
       - "8090:80"
     volumes:
-      - ../www:/www
-      - ./site.conf:/etc/nginx/conf.d/site.conf
+      - ../:/var/www/html/
+      - ./conf.d:/etc/nginx/conf.d
     networks:
       - code-network
-  php:
+  app:
     image: php:7-fpm
-    container_name: php
+    container_name: app
     volumes:
-      - ../www:/www
+      - ../app:/var/www/html/app/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - code-network
+  cart:
+    image: php:7-fpm
+    container_name: cart
+    volumes:
+      - ../ms_cart:/var/www/html/ms_cart/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - code-network
+  category:
+    image: php:7-fpm
+    container_name: category
+    volumes:
+      - ../ms_cart:/var/www/html/ms_category/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - code-network
+  pages:
+    image: php:7-fpm
+    container_name: pages
+    volumes:
+      - ../ms_cart:/var/www/html/ms_pages/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
       - code-network
