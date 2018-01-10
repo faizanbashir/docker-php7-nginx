@@ -3,6 +3,7 @@ services:
   web:
     image: nginx:latest
     container_name: webserver
+    restart: always
     ports: 
       - "8090:80"
     volumes:
@@ -11,36 +12,49 @@ services:
     networks:
       - code-network
   app:
-    image: php:7-fpm
+    image: mikechernev/php7-fpm-laravel
     container_name: app
+    restart: always
     volumes:
       - ../app:/var/www/html/app/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
       - code-network
   cart:
-    image: php:7-fpm
+    image: mikechernev/php7-fpm-laravel
     container_name: cart
+    restart: always
     volumes:
       - ../ms_cart:/var/www/html/ms_cart/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
       - code-network
   category:
-    image: php:7-fpm
+    image: mikechernev/php7-fpm-laravel
     container_name: category
+    restart: always
     volumes:
       - ../ms_category:/var/www/html/ms_category/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
       - code-network
   pages:
-    image: php:7-fpm
+    image: mikechernev/php7-fpm-laravel
     container_name: pages
+    restart: always
     volumes:
       - ../ms_pages:/var/www/html/ms_pages/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
+      - code-network
+  user:
+    image: mikechernev/php7-fpm-laravel
+    container_name: user
+    restart: always
+    volumes:
+      - ../ms_user:/var/www/html/ms_user/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks: 
       - code-network
 networks:
   code-network:
