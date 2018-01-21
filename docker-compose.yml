@@ -10,7 +10,18 @@ services:
       - ../:/var/www/html/
       - ./conf.d:/etc/nginx/conf.d
     networks:
-      - code-network
+      code-network:
+        aliases:
+          - app.public.esigns
+          - user.public.esigns
+          - cart.public.esigns
+          - category.public.esigns
+          - pages.public.esigns
+    depends_on:
+      - app
+      - cart
+      - pages
+      - category
   app:
     image: mikechernev/php7-fpm-laravel
     container_name: app
@@ -19,7 +30,14 @@ services:
       - ../app:/var/www/html/app/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
-      - code-network
+      code-network:
+        aliases: 
+          - app.public.esigns
+    depends_on:
+      - user
+      - category
+      - cart
+      - pages
   cart:
     image: mikechernev/php7-fpm-laravel
     container_name: cart
@@ -28,7 +46,9 @@ services:
       - ../ms_cart:/var/www/html/ms_cart/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
-      - code-network
+      code-network:
+        aliases:
+          - cart.public.esigns
   category:
     image: mikechernev/php7-fpm-laravel
     container_name: category
@@ -37,7 +57,9 @@ services:
       - ../ms_category:/var/www/html/ms_category/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
-      - code-network
+      code-network:
+        aliases:
+          - category.public.esigns
   pages:
     image: mikechernev/php7-fpm-laravel
     container_name: pages
@@ -46,7 +68,9 @@ services:
       - ../ms_pages:/var/www/html/ms_pages/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks:
-      - code-network
+      code-network:
+        aliases:
+          - pages.public.esigns
   user:
     image: mikechernev/php7-fpm-laravel
     container_name: user
@@ -55,7 +79,11 @@ services:
       - ../ms_user:/var/www/html/ms_user/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks: 
-      - code-network
+      code-network:
+        aliases:
+          - user.public.esigns
+    depends_on:
+      - cart
 networks:
   code-network:
     driver: bridge
