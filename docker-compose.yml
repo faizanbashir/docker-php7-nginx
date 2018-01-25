@@ -17,11 +17,13 @@ services:
           - cart.public.esigns
           - category.public.esigns
           - pages.public.esigns
+          - templates.public.esigns
     depends_on:
       - app
       - cart
       - pages
       - category
+      - templates
   app:
     image: mikechernev/php7-fpm-laravel
     container_name: app
@@ -84,6 +86,17 @@ services:
           - user.public.esigns
     depends_on:
       - cart
+  templates:
+    image: mikechernev/php7-fpm-laravel
+    container_name: templates
+    restart: always
+    volumes:
+      - ../ms_templates:/var/www/html/ms_templates/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks: 
+      code-network:
+        aliases:
+          - templates.public.esigns
 networks:
   code-network:
     driver: bridge
