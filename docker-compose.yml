@@ -3,7 +3,7 @@ services:
   web:
     image: nginx:latest
     container_name: webserver
-    restart: always
+    restart: unless-stopped
     ports: 
       - "8090:80"
     volumes:
@@ -18,16 +18,18 @@ services:
           - category.public.esigns
           - pages.public.esigns
           - templates.public.esigns
+          - products.public.esigns
     depends_on:
       - app
       - cart
       - pages
       - category
       - templates
+      - products
   app:
     image: mikechernev/php7-fpm-laravel
     container_name: app
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../app:/var/www/html/app/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
@@ -40,10 +42,12 @@ services:
       - category
       - cart
       - pages
+      - templates
+      - products
   cart:
     image: mikechernev/php7-fpm-laravel
     container_name: cart
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../ms_cart:/var/www/html/ms_cart/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
@@ -54,7 +58,7 @@ services:
   category:
     image: mikechernev/php7-fpm-laravel
     container_name: category
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../ms_category:/var/www/html/ms_category/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
@@ -65,7 +69,7 @@ services:
   pages:
     image: mikechernev/php7-fpm-laravel
     container_name: pages
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../ms_pages:/var/www/html/ms_pages/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
@@ -76,7 +80,7 @@ services:
   user:
     image: mikechernev/php7-fpm-laravel
     container_name: user
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../ms_user:/var/www/html/ms_user/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
@@ -89,9 +93,20 @@ services:
   templates:
     image: mikechernev/php7-fpm-laravel
     container_name: templates
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../ms_templates:/var/www/html/ms_templates/
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks: 
+      code-network:
+        aliases:
+          - templates.public.esigns
+  products:
+    image: mikechernev/php7-fpm-laravel
+    container_name: products
+    restart: unless-stopped
+    volumes:
+      - ../ms_products:/var/www/html/ms_products/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     networks: 
       code-network:
