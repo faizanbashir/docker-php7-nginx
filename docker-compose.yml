@@ -19,6 +19,8 @@ services:
           - pages.public.esigns
           - templates.public.esigns
           - products.public.esigns
+          - artboard.public.esigns
+          # - art.public.esigns
     depends_on:
       - app
       - cart
@@ -26,6 +28,23 @@ services:
       - category
       - templates
       - products
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb
+    restart: always
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - sqldata:/var/lib/mysql
+    networks: 
+      esigns-network:
+        aliases:
+          - mysql.docker.local
   app:
     image: mikechernev/php7-fpm-laravel
     container_name: app
@@ -33,6 +52,7 @@ services:
     volumes:
       - ../app:/var/www/html/app/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks:
       code-network:
         aliases: 
@@ -51,6 +71,7 @@ services:
     volumes:
       - ../ms_cart:/var/www/html/ms_cart/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks:
       code-network:
         aliases:
@@ -62,6 +83,7 @@ services:
     volumes:
       - ../ms_category:/var/www/html/ms_category/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks:
       code-network:
         aliases:
@@ -73,6 +95,7 @@ services:
     volumes:
       - ../ms_pages:/var/www/html/ms_pages/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks:
       code-network:
         aliases:
@@ -84,6 +107,7 @@ services:
     volumes:
       - ../ms_user:/var/www/html/ms_user/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks: 
       code-network:
         aliases:
@@ -97,6 +121,7 @@ services:
     volumes:
       - ../ms_templates:/var/www/html/ms_templates/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks: 
       code-network:
         aliases:
@@ -108,10 +133,40 @@ services:
     volumes:
       - ../ms_products:/var/www/html/ms_products/
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+      - composerdata:/root/.composer/
     networks: 
       code-network:
         aliases:
           - templates.public.esigns
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      code-network:
+        aliases:
+          - redis.public.esigns
+  artboard:
+    image: node:latest
+    container_name: artboard
+    restart: unless-stopped
+    working_dir: /var/www/html/artboard
+    volumes:
+      - ../artboard:/var/www/html/artboard/
+    ports:
+      - "8060:8060"
+    command: npm start
+    networks: 
+      code-network:
+        aliases:
+          - artboard.public.esigns
+
 networks:
   code-network:
     driver: bridge
+
+volumes:
+  sqldata:
+  composerdata:
